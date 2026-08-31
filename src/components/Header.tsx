@@ -141,6 +141,22 @@ export default function Header() {
           >
             הוספת חומרים
           </Link>
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={resetting}
+            title="איפוס כל התוכן"
+            style={{
+              ...tabBase,
+              border: "none",
+              background: "transparent",
+              color: "#B3392C",
+              opacity: resetting ? 0.6 : 1,
+              cursor: resetting ? "default" : "pointer",
+            }}
+          >
+            {resetting ? "מאפס..." : "איפוס"}
+          </button>
           <Link
             href="/"
             style={{
@@ -153,22 +169,6 @@ export default function Header() {
             תצוגת מחנכות
           </Link>
         </div>
-        <button
-          type="button"
-          onClick={handleReset}
-          disabled={resetting}
-          title="איפוס כל התוכן"
-          style={{
-            ...tabBase,
-            border: "1px solid var(--line)",
-            background: "transparent",
-            color: "#B3392C",
-            opacity: resetting ? 0.6 : 1,
-            cursor: resetting ? "default" : "pointer",
-          }}
-        >
-          {resetting ? "מאפס..." : "איפוס"}
-        </button>
       </div>
     </div>
   );
