@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
 export const runtime = "nodejs";
@@ -38,12 +38,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "סוג קובץ לא נתמך" }, { status: 400 });
   }
 
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadsDir, { recursive: true });
-
   const filename = `${randomUUID()}${ext}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(uploadsDir, filename), buffer);
+  const blob = await put(filename, file, {
+    access: "public",
+    addRandomSuffix: false,
+  });
 
-  return NextResponse.json({ url: `/uploads/${filename}`, name: file.name });
+  return NextResponse.json({ url: blob.url, name: file.name });
 }

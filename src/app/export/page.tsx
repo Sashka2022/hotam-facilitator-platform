@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { categoryMeta } from "@/lib/categories";
+import { categoryMeta, siteUrl } from "@/lib/categories";
 import MaterialIcon from "@/components/MaterialIcon";
 import PrintButton from "@/components/PrintButton";
+import WhatsAppShareButton from "@/components/WhatsAppShareButton";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +35,10 @@ export default async function ExportPage() {
         <Link href="/admin" style={{ color: "var(--brand-blue)", fontWeight: 700, fontSize: 14 }}>
           ← חזרה לניהול
         </Link>
-        <PrintButton />
+        <div style={{ display: "flex", gap: 12 }}>
+          <WhatsAppShareButton url={`${siteUrl()}/export`} plenaryTitle={plenary.title} />
+          <PrintButton />
+        </div>
       </div>
 
       <div
