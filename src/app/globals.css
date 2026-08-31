@@ -169,6 +169,24 @@ button {
   animation: fadeUp 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.page-pad {
+  padding: 40px;
+}
+@media (max-width: 640px) {
+  .page-pad {
+    padding: 20px 16px;
+  }
+}
+
+.bar-pad {
+  padding: 20px 32px;
+}
+@media (max-width: 640px) {
+  .bar-pad {
+    padding: 14px 16px;
+  }
+}
+
 .print-color {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;

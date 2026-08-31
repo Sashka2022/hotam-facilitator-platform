@@ -22,12 +22,13 @@ export default async function ExportPage() {
   return (
     <div dir="rtl" lang="he" style={{ background: "var(--soft-bg)", minHeight: "100vh" }}>
       <div
-        className="no-print"
+        className="no-print bar-pad"
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "20px 32px",
+          flexWrap: "wrap",
+          gap: 12,
           background: "var(--white)",
           borderBottom: "1px solid var(--line)",
         }}
@@ -42,10 +43,10 @@ export default async function ExportPage() {
       </div>
 
       <div
+        className="page-pad"
         style={{
           maxWidth: 720,
           margin: "0 auto",
-          padding: "40px 32px 64px",
         }}
       >
         <div
