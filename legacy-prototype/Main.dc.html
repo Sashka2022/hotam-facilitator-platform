@@ -1,0 +1,505 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: #0048FF; text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    input, select, textarea, button { font-family: 'Heebo', sans-serif; }
+    input::placeholder, textarea::placeholder { color: #8390B2; }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #0048FF;
+      outline-offset: 1px;
+      border-color: #0048FF;
+    }
+    button { cursor: pointer; }
+    .icon-btn-dark { transition: background 200ms; }
+    .icon-btn-dark:hover { background: #E7ECFC !important; }
+    .icon-btn-light { transition: background 200ms; }
+    .icon-btn-light:hover { background: rgba(255,255,255,0.38) !important; }
+    .hotam-scroll::-webkit-scrollbar { width: 8px; }
+    .hotam-scroll::-webkit-scrollbar-thumb { background: #DCE3F5; border-radius: 8px; }
+
+    .hub-center:focus-visible { outline: 3px solid #FEFEFE; outline-offset: 5px; }
+    .satellite-btn:focus-visible { outline: 3px solid #0048FF; outline-offset: 3px; }
+    .accordion-toggle:focus-visible { outline: 2px solid #0048FF; outline-offset: -2px; }
+
+    @keyframes hubCenterIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .hub-center { animation: hubCenterIn 480ms cubic-bezier(0.22,1,0.36,1) both; }
+
+    @keyframes plenaryMobileIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .plenary-mobile { animation: plenaryMobileIn 380ms cubic-bezier(0.22,1,0.36,1) both; }
+
+    @keyframes hubSatelliteIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    .satellite-wrap { animation: hubSatelliteIn 550ms cubic-bezier(0.34,1.56,0.64,1) both; }
+
+    .hub-line { stroke-dasharray: 6 8; animation: lineFlow 1.8s linear infinite; }
+    @keyframes lineFlow { to { stroke-dashoffset: -28; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hub-center { animation: none !important; opacity: 1 !important; transform: translate(-50%, -50%) scale(1) !important; }
+      .satellite-wrap { animation: none !important; opacity: 1 !important; transform: translate(-50%, -50%) scale(1) !important; }
+      .plenary-mobile { animation: none !important; opacity: 1 !important; transform: none !important; }
+      .hub-line { animation: none !important; }
+    }
+  </style>
+</helmet>
+
+<div dir="rtl" lang="he" style="width: 100%; height: 100vh; display: flex; flex-direction: column; font-family: 'Heebo', sans-serif; background: #FEFEFE; overflow: hidden;">
+
+  <div style="display: flex; align-items: center; justify-content: space-between; height: 76px; padding: {{headerPadding}}; border-bottom: 1px solid #DCE3F5; background: #FEFEFE; flex-shrink: 0;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <img src="hotam-logo-hebrew.png" alt="חותם" style="height: 34px; width: auto; display: block;" />
+      <div style="width: 1px; height: 28px; background: #DCE3F5;"></div>
+      <div>
+        <div style="font-weight: 800; font-size: 18px; color: #0B1440; line-height: 1.2;">פלטפורמה למנחה</div>
+        <sc-if value="{{showTagline}}" hint-placeholder-val="{{true}}">
+          <div style="font-weight: 500; font-size: 13px; color: #0048FF; margin-top: 2px;">חומרי הדרכה מעוצבים למחנכות</div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="display: flex; gap: 4px; background: #F3F6FF; padding: 4px; border-radius: 999px;">
+        <button onClick="{{goAdmin}}" style="{{adminTabStyle}}">הוספת חומרים</button>
+        <button onClick="{{goGallery}}" style="{{galleryTabStyle}}">תצוגת מחנכות</button>
+      </div>
+      <div style="display: flex; gap: 4px; background: #F3F6FF; padding: 4px; border-radius: 999px;">
+        <button onClick="{{setDesktopViewport}}" aria-label="תצוגת מחשב" style="{{desktopBtnStyle}}">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="13" rx="2"></rect>
+            <path d="M8 21h8"></path>
+            <path d="M12 17v4"></path>
+          </svg>
+        </button>
+        <button onClick="{{setMobileViewport}}" aria-label="תצוגת נייד" style="{{mobileBtnStyle}}">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="7" y="2" width="10" height="20" rx="2"></rect>
+            <path d="M11 18h2"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hotam-scroll" style="flex: 1; overflow: auto; background: #F3F6FF; padding: {{bodyPadding}};">
+
+    <sc-if value="{{isAdmin}}" hint-placeholder-val="{{true}}">
+      <div style="{{adminRowStyle}}">
+
+        <div style="{{formCardStyle}}">
+          <h2 style="font-weight: 800; font-size: 20px; color: #0048FF; margin: 0 0 8px;">עריכת המליאה</h2>
+          <p style="font-size: 13px; color: #4A5580; line-height: 1.5; margin: 0 0 20px;">הטקסט הזה יופיע בכרטיס המרכזי שמחבר בין כל חומרי המפגש.</p>
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">כותרת המליאה</label>
+          <input type="text" value="{{plenary.title}}" onChange="{{setPlenaryTitle}}" placeholder="לדוגמה: מליאת טשרניחובסקי" style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; margin-bottom: 18px;" />
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">תקציר המליאה</label>
+          <textarea value="{{plenary.description}}" onChange="{{setPlenaryDescription}}" rows="4" placeholder="כמה משפטים על נושא המליאה..." style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; resize: vertical;"></textarea>
+        </div>
+
+        <div style="{{formCardStyle}}">
+          <h2 style="font-weight: 800; font-size: 22px; color: #0048FF; margin: 0 0 8px;">הוספת חומר חדש</h2>
+          <p style="font-size: 14px; color: #4A5580; line-height: 1.5; margin: 0 0 24px;">הזינו פרטים על החומר, ותוכלו לראות מיד איך הוא ייראה סביב המליאה — ואיך ייראה כשתשתפו אותו.</p>
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">שם החומר</label>
+          <input type="text" value="{{form.title}}" onChange="{{setTitleField}}" placeholder="לדוגמה: מצגת פתיחה לשנה״ל" style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; margin-bottom: 18px;" />
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">כותרת לשיתוף <span style="font-weight: 400; color: #8390B2;">(מה שיוצג כשמשתפים את הקישור — אופציונלי)</span></label>
+          <input type="text" value="{{form.shareTitle}}" onChange="{{setShareTitleField}}" placeholder="כברירת מחדל: שם החומר" style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; margin-bottom: 18px;" />
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">קישור לחומר</label>
+          <input type="url" value="{{form.link}}" onChange="{{setLinkField}}" placeholder="https://..." style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; margin-bottom: 18px; direction: ltr; text-align: right;" />
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">סוג החומר</label>
+          <select value="{{form.category}}" onChange="{{setCategoryField}}" style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; margin-bottom: 18px; background: #FEFEFE;">
+            <option value="presentation">מצגת</option>
+            <option value="video">סרטון</option>
+            <option value="article">מאמר</option>
+            <option value="worksheet">פעילות / דף עבודה</option>
+          </select>
+
+          <label style="display: block; font-size: 13px; font-weight: 700; color: #0B1440; margin-bottom: 6px;">תיאור קצר למחנכות</label>
+          <textarea value="{{form.description}}" onChange="{{setDescField}}" rows="3" placeholder="כמה מילים על מה זה ולמה זה שימושי..." style="width: 100%; padding: 10px 14px; border: 1px solid #DCE3F5; border-radius: 10px; font-size: 14px; color: #0B1440; margin-bottom: 18px; resize: vertical;"></textarea>
+
+          <div style="border: 2px dashed #DCE3F5; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px; background: #F3F6FF;">
+            <div style="width: 26px; height: 26px; margin: 0 auto 8px; color: #0048FF;">
+              <svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 18a4 4 0 0 1-1-7.874A5 5 0 0 1 16.9 8H17a4 4 0 0 1 0 8h-1"></path>
+                <path d="M12 12v7"></path>
+                <path d="M9 15l3-3 3 3"></path>
+              </svg>
+            </div>
+            <div style="font-size: 13px; color: #4A5580;">גררו קובץ לכאן או לחצו לבחירה</div>
+            <div style="font-size: 11px; color: #8390B2; margin-top: 4px;">(הדגמה בלבד — העלאת קבצים תיתמך בגרסה הסופית)</div>
+          </div>
+
+          <button onClick="{{addMaterial}}" style="width: 100%; padding: 12px; border: none; border-radius: 10px; background: #0048FF; color: #FEFEFE; font-weight: 700; font-size: 15px;">הוספה למליאה</button>
+        </div>
+
+        <div style="flex: 1; min-width: 0;">
+          <h3 style="font-weight: 800; font-size: 17px; color: #0B1440; margin: 0 0 16px;">החומרים שהוספת ({{materialsCount}})</h3>
+          <sc-for list="{{materials}}" as="item" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 16px; background: #FEFEFE; border: 1px solid #DCE3F5; border-radius: 14px; padding: 14px 20px; margin-bottom: 12px;">
+              <div style="width: 48px; height: 48px; border-radius: 12px; background: {{item.iconBg}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <dc-import name="MaterialIcon" is-presentation="{{item.isPresentation}}" is-video="{{item.isVideo}}" is-article="{{item.isArticle}}" is-worksheet="{{item.isWorksheet}}" color="#0048FF" size="24" hint-size="24,24"></dc-import>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 700; font-size: 15px; color: #0B1440; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{item.title}}</div>
+                <div style="font-size: 13px; color: #4A5580; margin-top: 2px;">{{item.categoryLabel}}</div>
+              </div>
+              <button onClick="{{item.openShare}}" aria-label="שיתוף" style="width: 38px; height: 38px; border-radius: 999px; border: 1px solid #DCE3F5; background: #FEFEFE; color: #0048FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="6" cy="12" r="2.2"></circle>
+                  <circle cx="18" cy="6" r="2.2"></circle>
+                  <circle cx="18" cy="18" r="2.2"></circle>
+                  <path d="M8 10.8L16 7.2"></path>
+                  <path d="M8 13.2l8 3.6"></path>
+                </svg>
+              </button>
+              <button onClick="{{item.openDetail}}" style="padding: 8px 16px; border-radius: 999px; border: 1px solid #0048FF; background: transparent; color: #0048FF; font-weight: 700; font-size: 13px; flex-shrink: 0;">תצוגה מקדימה</button>
+            </div>
+          </sc-for>
+        </div>
+
+      </div>
+    </sc-if>
+
+    <sc-if value="{{isGallery}}" hint-placeholder-val="{{false}}">
+
+      <sc-if value="{{isMobile}}" hint-placeholder-val="{{false}}">
+        <div style="max-width: 480px; margin: 0 auto;">
+          <div class="plenary-mobile" tabindex="0" role="group" aria-label="{{plenary.title}}" style="background: #0048FF; color: #FEFEFE; border-radius: 28px; padding: 32px 28px; box-shadow: 0 20px 50px -20px rgba(0,72,255,0.45); margin-bottom: 24px;">
+            <div style="font-weight: 800; font-size: 12px; letter-spacing: 0.03em; opacity: 0.85; margin-bottom: 10px;">מליאה</div>
+            <div style="font-weight: 800; font-size: 22px; line-height: 1.3; margin-bottom: 12px;">{{plenary.title}}</div>
+            <div style="font-size: 15px; line-height: 1.6; opacity: 0.95;">{{plenary.description}}</div>
+          </div>
+
+          <sc-for list="{{materials}}" as="item" hint-placeholder-count="4">
+            <div style="position: relative; background: #FEFEFE; border: 1px solid #DCE3F5; border-radius: 16px; margin-bottom: 12px; overflow: hidden;">
+              <button class="accordion-toggle" onClick="{{item.toggleMobile}}" style="width: 100%; display: flex; align-items: center; gap: 14px; padding: 14px 56px 14px 18px; border: none; background: transparent; text-align: right; min-height: 64px;">
+                <div style="width: 48px; height: 48px; border-radius: 14px; background: {{item.iconBg}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <dc-import name="MaterialIcon" is-presentation="{{item.isPresentation}}" is-video="{{item.isVideo}}" is-article="{{item.isArticle}}" is-worksheet="{{item.isWorksheet}}" color="#0048FF" size="26" hint-size="26,26"></dc-import>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-weight: 700; font-size: 15px; color: #0B1440;">{{item.title}}</div>
+                  <div style="font-size: 12px; color: #4A5580; margin-top: 2px;">{{item.categoryLabel}}</div>
+                </div>
+                <div style="width: 20px; height: 20px; color: #8390B2; flex-shrink: 0; {{item.chevronStyle}}">
+                  <svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6"></path>
+                  </svg>
+                </div>
+              </button>
+              <button onClick="{{item.openShare}}" aria-label="שיתוף" style="position: absolute; top: 12px; left: 12px; width: 40px; height: 40px; border-radius: 999px; border: none; background: #F3F6FF; color: #0048FF; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="6" cy="12" r="2.2"></circle>
+                  <circle cx="18" cy="6" r="2.2"></circle>
+                  <circle cx="18" cy="18" r="2.2"></circle>
+                  <path d="M8 10.8L16 7.2"></path>
+                  <path d="M8 13.2l8 3.6"></path>
+                </svg>
+              </button>
+              <sc-if value="{{item.isActive}}" hint-placeholder-val="{{false}}">
+                <div style="padding: 0 18px 20px; border-top: 1px solid #DCE3F5; margin-top: 2px; padding-top: 14px;">
+                  <p style="font-size: 14px; color: #4A5580; line-height: 1.55; margin: 0 0 14px;">{{item.description}}</p>
+                  <a href="{{item.link}}" target="_blank" rel="noreferrer" style="display: block; text-align: center; padding: 12px; border-radius: 10px; background: #0048FF; color: #FEFEFE; font-weight: 700; font-size: 14px;">לצפייה בחומר</a>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{isDesktopHub}}" hint-placeholder-val="{{true}}">
+        <div style="position: relative; width: 900px; height: 700px; max-width: 100%; margin: 20px auto;">
+
+          <svg viewBox="0 0 900 700" width="900" height="700" style="position: absolute; inset: 0; pointer-events: none;">
+            <sc-for list="{{materials}}" as="item" hint-placeholder-count="4">
+              <line class="hub-line" x1="450" y1="350" x2="{{item.lineX2}}" y2="{{item.lineY2}}" stroke="#DCE3F5" stroke-width="2"></line>
+            </sc-for>
+          </svg>
+
+          <div class="hub-center" tabindex="0" role="group" aria-label="{{plenary.title}}" style="position: absolute; left: 450px; top: 350px; width: 320px; padding: 32px 30px; border-radius: 44px; background: #0048FF; color: #FEFEFE; box-shadow: 0 30px 70px -20px rgba(0,72,255,0.45); text-align: center;">
+            <div style="font-weight: 800; font-size: 12px; letter-spacing: 0.03em; opacity: 0.85; margin-bottom: 10px;">מליאה</div>
+            <div style="font-weight: 800; font-size: 21px; line-height: 1.3; margin-bottom: 12px;">{{plenary.title}}</div>
+            <div style="font-size: 14px; line-height: 1.6; opacity: 0.95;">{{plenary.description}}</div>
+          </div>
+
+          <sc-for list="{{materials}}" as="item" hint-placeholder-count="4">
+            <div class="satellite-wrap" style="{{item.satelliteWrapStyle}}">
+              <button class="satellite-btn" onClick="{{item.openDetail}}" onMouseEnter="{{item.setActive}}" onMouseLeave="{{item.clearActive}}" onFocus="{{item.setActive}}" onBlur="{{item.clearActive}}" style="{{item.satelliteBtnStyle}}">
+                <div style="width: 56px; height: 56px; border-radius: 16px; background: {{item.iconBg}}; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+                  <dc-import name="MaterialIcon" is-presentation="{{item.isPresentation}}" is-video="{{item.isVideo}}" is-article="{{item.isArticle}}" is-worksheet="{{item.isWorksheet}}" color="#0048FF" size="30" hint-size="30,30"></dc-import>
+                </div>
+                <div style="font-weight: 800; font-size: 13px; color: #0B1440; line-height: 1.3;">{{item.title}}</div>
+                <sc-if value="{{item.isActive}}" hint-placeholder-val="{{false}}">
+                  <div style="font-size: 12px; color: #4A5580; line-height: 1.5; margin-top: 8px;">{{item.description}}</div>
+                  <div style="font-size: 12px; color: #0048FF; font-weight: 700; margin-top: 8px;">לצפייה בחומר ←</div>
+                </sc-if>
+              </button>
+              <button onClick="{{item.openShare}}" aria-label="שיתוף" style="position: absolute; top: -6px; left: -6px; width: 30px; height: 30px; border-radius: 999px; border: 1px solid #DCE3F5; background: #FEFEFE; color: #0048FF; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="6" cy="12" r="2.2"></circle>
+                  <circle cx="18" cy="6" r="2.2"></circle>
+                  <circle cx="18" cy="18" r="2.2"></circle>
+                  <path d="M8 10.8L16 7.2"></path>
+                  <path d="M8 13.2l8 3.6"></path>
+                </svg>
+              </button>
+            </div>
+          </sc-for>
+
+        </div>
+      </sc-if>
+
+    </sc-if>
+
+  </div>
+
+  <sc-if value="{{hasDetail}}" hint-placeholder-val="{{false}}">
+    <div onClick="{{closeDetail}}" style="position: fixed; inset: 0; background: rgba(11,20,64,0.5); display: flex; align-items: flex-start; justify-content: center; z-index: 50; padding: 40px 24px; overflow: auto;">
+      <div class="hotam-scroll" onClick="{{stopClick}}" style="width: 600px; max-width: 100%; max-height: 100%; overflow: auto; background: #FEFEFE; border-radius: 28px; box-shadow: 0 24px 60px -20px rgba(11,20,64,0.3);">
+
+        <div style="position: relative; padding: 44px 36px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; background: linear-gradient(90deg, #41CAC5 0%, #0DB4F4 22%, #2680F1 44%, #3B5DEC 66%, #6536EA 85%, #0048FF 100%);">
+          <button class="icon-btn-light" onClick="{{closeDetail}}" aria-label="סגירה" style="position: absolute; top: 18px; left: 18px; width: 38px; height: 38px; border-radius: 999px; border: none; background: rgba(255,255,255,0.25); color: #FEFEFE; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6L6 18"></path>
+            </svg>
+          </button>
+          <div style="width: 104px; height: 104px; border-radius: 999px; background: #FEFEFE; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px -10px rgba(11,20,64,0.3);">
+            <dc-import name="MaterialIcon" is-presentation="{{detailItem.isPresentation}}" is-video="{{detailItem.isVideo}}" is-article="{{detailItem.isArticle}}" is-worksheet="{{detailItem.isWorksheet}}" color="#0048FF" size="56" hint-size="56,56"></dc-import>
+          </div>
+          <div style="display: inline-block; background: rgba(255,255,255,0.25); color: #FEFEFE; font-size: 13px; font-weight: 700; padding: 5px 14px; border-radius: 999px;">{{detailItem.categoryLabel}}</div>
+          <div style="font-weight: 800; font-size: 28px; color: #FEFEFE; line-height: 1.3; max-width: 440px;">{{detailItem.title}}</div>
+        </div>
+
+        <div style="padding: 36px;">
+          <p style="font-size: 16px; line-height: 1.65; color: #0B1440; margin: 0 0 28px;">{{detailItem.description}}</p>
+
+          <a href="{{detailItem.link}}" target="_blank" rel="noreferrer" style="display: block; text-align: center; padding: 16px; border-radius: 999px; background: #0048FF; color: #FEFEFE; font-weight: 700; font-size: 16px; margin-bottom: 12px;">פתיחת החומר המלא</a>
+          <button onClick="{{toggleShare}}" style="width: 100%; text-align: center; padding: 14px; border-radius: 999px; background: transparent; border: 1px solid #DCE3F5; color: #0048FF; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 28px;">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="6" cy="12" r="2.2"></circle>
+              <circle cx="18" cy="6" r="2.2"></circle>
+              <circle cx="18" cy="18" r="2.2"></circle>
+              <path d="M8 10.8L16 7.2"></path>
+              <path d="M8 13.2l8 3.6"></path>
+            </svg>
+            <span>שיתוף החומר</span>
+          </button>
+
+          <sc-if value="{{shareExpanded}}" hint-placeholder-val="{{false}}">
+            <div style="border: 1px solid #DCE3F5; border-radius: 18px; padding: 24px; background: #F9FAFF; margin-bottom: 28px;">
+              <div style="font-weight: 800; font-size: 15px; color: #0B1440; margin-bottom: 6px;">כותרת השיתוף</div>
+              <div style="font-size: 14px; color: #0048FF; font-weight: 700; margin-bottom: 18px;">{{detailItem.effectiveShareTitle}}</div>
+
+              <div style="font-size: 11px; color: #8390B2; margin-bottom: 6px;">קישור ייחודי לחומר הזה:</div>
+              <div style="background: #FEFEFE; border: 1px solid #DCE3F5; border-radius: 10px; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #0048FF; margin-bottom: 16px; direction: ltr; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{detailItem.shareUrlDisplay}}</div>
+
+              <button onClick="{{copyLink}}" style="width: 100%; padding: 13px; border-radius: 10px; border: none; background: #0048FF; color: #FEFEFE; font-weight: 700; font-size: 14px; margin-bottom: 22px;">{{copyButtonLabel}}</button>
+
+              <div style="font-size: 12px; color: #8390B2; margin-bottom: 10px;">כך ייראה הקישור כשתשלחו אותו לקבוצת וואטסאפ:</div>
+              <div style="border: 1px solid #DCE3F5; border-radius: 16px; overflow: hidden; max-width: 280px; background: #FEFEFE; box-shadow: 0 1px 2px rgba(11,20,64,0.06);">
+                <div style="position: relative; width: 100%; height: 140px; background: {{detailItem.accent}}; display: flex; align-items: center; justify-content: center;">
+                  <dc-import name="MaterialIcon" is-presentation="{{detailItem.isPresentation}}" is-video="{{detailItem.isVideo}}" is-article="{{detailItem.isArticle}}" is-worksheet="{{detailItem.isWorksheet}}" color="#FEFEFE" size="52" hint-size="52,52"></dc-import>
+                </div>
+                <div style="padding: 12px 14px; text-align: right;">
+                  <div style="font-weight: 700; font-size: 14px; color: #0B1440; line-height: 1.35;">{{detailItem.effectiveShareTitle}}</div>
+                  <div style="font-size: 12px; color: #8390B2; margin-top: 4px; direction: ltr; text-align: left;">{{detailItem.shareUrlDisplay}}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <div style="display: flex; align-items: center; justify-content: center; gap: 10px; padding-top: 20px; border-top: 1px solid #DCE3F5;">
+            <img src="hotam-logo-hebrew.png" alt="חותם" style="height: 16px; width: auto; opacity: 0.7;" />
+            <span style="font-size: 12px; color: #8390B2;">אחריות לחינוך בישראל</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+<script data-dc-script>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: 'gallery',
+      viewport: 'desktop',
+      detailId: null,
+      shareExpanded: false,
+      copied: false,
+      activeId: null,
+      nextId: 5,
+      plenary: {
+        title: 'מליאת טשרניחובסקי',
+        description: 'המליאה עוסקת בשאלה איך יוצרים שיח משמעותי בכיתה, ומשלבת הרצאה קצרה ודיון בקבוצות. כל חומרי העזר למנחה זמינים סביב.',
+      },
+      form: { title: '', shareTitle: '', link: '', category: 'presentation', description: '' },
+      materials: [
+        { id: 1, title: 'מצגת פתיחה', shareTitle: 'איך פותחים שנת לימודים עם השראה', category: 'presentation', link: 'https://docs.google.com/presentation/d/example-1', description: 'מצגת פתיחה חמה לשנת הלימודים, לשימוש במפגש הראשון עם הצוות החינוכי.', shareSlug: 'a1b2c3' },
+        { id: 2, title: 'סרטון השראה', shareTitle: '', category: 'video', link: 'https://youtube.com/watch?v=example-2', description: 'סרטון קצר (4 דק׳) שמניע שיחה על משמעות בהוראה, מתאים לפתיחת מפגש צוות.', shareSlug: 'd4e5f6' },
+        { id: 3, title: 'מאמר רקע', shareTitle: 'קהילה לומדת שמניעה שינוי אמיתי', category: 'article', link: 'https://example.org/article-3', description: 'מאמר קריאה להעמקה לקראת מפגש צוות בנושא עבודה קהילתית משותפת.', shareSlug: 'g7h8i9' },
+        { id: 4, title: 'שאלון מקדים', shareTitle: '', category: 'worksheet', link: 'https://example.org/worksheet-4.pdf', description: 'שאלון קצר למילוי לפני המליאה, כדי למפות ציפיות וידע קודם.', shareSlug: 'j1k2l3' },
+      ],
+    };
+  }
+
+  renderVals() {
+    const categoryMeta = {
+      presentation: { label: 'מצגת', accent: '#41CAC5' },
+      video: { label: 'סרטון', accent: '#0DB4F4' },
+      article: { label: 'מאמר', accent: '#6536EA' },
+      worksheet: { label: 'פעילות', accent: '#2680F1' },
+    };
+
+    const total = this.state.materials.length;
+    const stageCx = 450, stageCy = 350, orbitR = 280;
+
+    const materials = this.state.materials.map((m, i) => {
+      const meta = categoryMeta[m.category];
+      const isActive = this.state.activeId === m.id;
+      const theta = total > 0 ? (i * 2 * Math.PI) / total : 0;
+      const dx = Math.round(orbitR * Math.sin(theta));
+      const dy = Math.round(-orbitR * Math.cos(theta));
+      const satX = stageCx + dx, satY = stageCy + dy;
+      const btnWidth = isActive ? 200 : 108;
+
+      return {
+        ...m,
+        categoryLabel: meta.label,
+        accent: meta.accent,
+        iconBg: meta.accent + '26',
+        shareUrlDisplay: 'materials.hotam.org.il/m/' + m.shareSlug,
+        shareUrl: 'https://materials.hotam.org.il/m/' + m.shareSlug,
+        effectiveShareTitle: (m.shareTitle && m.shareTitle.trim()) ? m.shareTitle.trim() : m.title,
+        isPresentation: m.category === 'presentation',
+        isVideo: m.category === 'video',
+        isArticle: m.category === 'article',
+        isWorksheet: m.category === 'worksheet',
+        isActive,
+        lineX2: satX,
+        lineY2: satY,
+        satelliteWrapStyle: `position:absolute; left:${satX}px; top:${satY}px; animation-delay:${260 + i * 90}ms;`,
+        satelliteBtnStyle: `display:block; border:none; cursor:pointer; padding:18px 14px; text-align:center; background:#FEFEFE; border-radius:24px; width:${btnWidth}px; transition:width 260ms cubic-bezier(0.22,1,0.36,1), box-shadow 220ms; box-shadow:${isActive ? '0 16px 34px -10px rgba(11,20,64,0.3)' : '0 6px 18px -8px rgba(11,20,64,0.18)'};`,
+        chevronStyle: isActive ? 'transform:rotate(180deg);transition:transform 200ms;' : 'transition:transform 200ms;',
+        openDetail: () => this.setState({ detailId: m.id, shareExpanded: false, copied: false }),
+        openShare: (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.setState({ detailId: m.id, shareExpanded: true, copied: false });
+        },
+        setActive: () => this.setState({ activeId: m.id }),
+        clearActive: () => this.setState((s) => (s.activeId === m.id ? { activeId: null } : null)),
+        toggleMobile: () => this.setState({ activeId: this.state.activeId === m.id ? null : m.id }),
+      };
+    });
+
+    const detailItem = materials.find((m) => m.id === this.state.detailId) || {};
+
+    const setField = (field) => (e) => {
+      const value = e && e.target ? e.target.value : '';
+      this.setState({ form: { ...this.state.form, [field]: value } });
+    };
+
+    const setPlenaryField = (field) => (e) => {
+      const value = e && e.target ? e.target.value : '';
+      this.setState({ plenary: { ...this.state.plenary, [field]: value } });
+    };
+
+    const genSlug = () => Math.random().toString(36).slice(2, 8);
+
+    const addMaterial = () => {
+      const f = this.state.form;
+      if (!f.title.trim() || !f.link.trim()) return;
+      const id = this.state.nextId;
+      this.setState({
+        materials: [...this.state.materials, { id, title: f.title.trim(), shareTitle: f.shareTitle.trim(), link: f.link.trim(), category: f.category, description: f.description.trim(), shareSlug: genSlug() }],
+        form: { title: '', shareTitle: '', link: '', category: 'presentation', description: '' },
+        nextId: id + 1,
+      });
+    };
+
+    const copyLink = () => {
+      const link = detailItem.shareUrl || '';
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link);
+      } catch (e) {}
+      this.setState({ copied: true });
+      setTimeout(() => this.setState({ copied: false }), 2000);
+    };
+
+    const tabBase = "padding:10px 20px;border:none;border-radius:999px;font-weight:700;font-size:14px;transition:background 220ms cubic-bezier(0.22,1,0.36,1), color 220ms;";
+    const deviceBtnBase = "width:36px;height:34px;border:none;border-radius:999px;display:flex;align-items:center;justify-content:center;transition:background 200ms;";
+    const isAdmin = this.state.view === 'admin';
+    const isGallery = this.state.view === 'gallery';
+    const isMobile = this.state.viewport === 'mobile';
+
+    return {
+      isAdmin,
+      isGallery,
+      isMobile,
+      isDesktopHub: !isMobile,
+      showTagline: !isMobile,
+      headerPadding: isMobile ? '0 20px' : '0 40px',
+      bodyPadding: isMobile ? '24px 16px' : '40px',
+      adminRowStyle: isMobile
+        ? "display:flex;flex-direction:column;gap:24px;max-width:600px;margin:0 auto;"
+        : "display:flex;gap:32px;align-items:flex-start;max-width:1200px;margin:0 auto;",
+      formCardStyle: "background:#FEFEFE;border:1px solid #DCE3F5;border-radius:16px;padding:32px;box-shadow:0 8px 24px -10px rgba(11,20,64,0.18);flex-shrink:0;" + (isMobile ? "width:100%;" : "width:400px;"),
+      hasDetail: this.state.detailId !== null,
+      shareExpanded: this.state.shareExpanded,
+      copyButtonLabel: this.state.copied ? 'הקישור הועתק' : 'העתקת קישור לשיתוף',
+      materials,
+      materialsCount: materials.length,
+      detailItem,
+      form: this.state.form,
+      plenary: this.state.plenary,
+      adminTabStyle: tabBase + (isAdmin ? "background:#0048FF;color:#FEFEFE;" : "background:transparent;color:#0048FF;"),
+      galleryTabStyle: tabBase + (isGallery ? "background:#0048FF;color:#FEFEFE;" : "background:transparent;color:#0048FF;"),
+      desktopBtnStyle: deviceBtnBase + (!isMobile ? "background:#0048FF;color:#FEFEFE;" : "background:transparent;color:#0048FF;"),
+      mobileBtnStyle: deviceBtnBase + (isMobile ? "background:#0048FF;color:#FEFEFE;" : "background:transparent;color:#0048FF;"),
+      goAdmin: () => this.setState({ view: 'admin' }),
+      goGallery: () => this.setState({ view: 'gallery' }),
+      setDesktopViewport: () => this.setState({ viewport: 'desktop' }),
+      setMobileViewport: () => this.setState({ viewport: 'mobile' }),
+      closeDetail: () => this.setState({ detailId: null, shareExpanded: false, copied: false }),
+      toggleShare: () => this.setState({ shareExpanded: !this.state.shareExpanded }),
+      stopClick: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+      setTitleField: setField('title'),
+      setShareTitleField: setField('shareTitle'),
+      setLinkField: setField('link'),
+      setCategoryField: setField('category'),
+      setDescField: setField('description'),
+      setPlenaryTitle: setPlenaryField('title'),
+      setPlenaryDescription: setPlenaryField('description'),
+      addMaterial,
+      copyLink,
+    };
+  }
+}
+</script>
+</x-dc>
+</body>
+</html>

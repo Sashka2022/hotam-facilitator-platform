@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Plenary {
+  id          Int    @id @default(1)
+  title       String
+  description String
+}
+
+model Material {
+  id          Int      @id @default(autoincrement())
+  title       String
+  shareTitle  String   @default("")
+  link        String
+  category    String
+  description String
+  fileUrl     String?
+  shareSlug   String   @unique
+  createdAt   DateTime @default(now())
+}
