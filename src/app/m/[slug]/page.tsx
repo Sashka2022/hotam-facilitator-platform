@@ -206,7 +206,7 @@ export default async function MaterialPage({
             <img
               src="/rashit-logo.png"
               alt="ראשית - קהילות מחנכות"
-              style={{ height: 16, width: "auto", opacity: 0.7 }}
+              style={{ height: 7, width: "auto", opacity: 0.7 }}
             />
             <span style={{ fontSize: 12, color: "#8390B2" }}>אחריות לחינוך בישראל</span>
           </div>

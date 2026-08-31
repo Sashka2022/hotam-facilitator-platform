@@ -58,7 +58,7 @@ export default async function ExportPage() {
           }}
         >
           <img src="/hotam-logo-hebrew.png" alt="חותם" style={{ height: 30, width: "auto" }} />
-          <img src="/rashit-logo.png" alt="ראשית - קהילות מחנכות" style={{ height: 30, width: "auto" }} />
+          <img src="/rashit-logo.png" alt="ראשית - קהילות מחנכות" style={{ height: 13, width: "auto" }} />
         </div>
 
         <div
