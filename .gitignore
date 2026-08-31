@@ -12,3 +12,6 @@ public/uploads/*
 !public/uploads/.gitkeep
 .DS_Store
 Thumbs.db
+
+.vercel
+.env*

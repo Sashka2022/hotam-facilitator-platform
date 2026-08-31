@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import Header from "@/components/Header";
 import AdminClient from "@/components/AdminClient";
@@ -31,6 +32,25 @@ export default async function AdminPage() {
     >
       <Header />
       <div className="hotam-scroll" style={{ flex: 1, overflow: "auto", background: "var(--soft-bg)", padding: 40 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto 24px", display: "flex", justifyContent: "flex-end" }}>
+          <Link
+            href="/export"
+            target="_blank"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "12px 22px",
+              borderRadius: 999,
+              background: "var(--brand-blue)",
+              color: "var(--white)",
+              fontWeight: 700,
+              fontSize: 14,
+            }}
+          >
+            ייצוא PDF למחנכות ←
+          </Link>
+        </div>
         <AdminClient initialPlenary={plenary} initialMaterials={materials} />
       </div>
     </div>
