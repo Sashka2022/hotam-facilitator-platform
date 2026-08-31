@@ -505,6 +505,7 @@ export default function GalleryClient({
                 }}
               >
                 <img src="/hotam-logo-hebrew.png" alt="חותם" style={{ height: 16, width: "auto", opacity: 0.7 }} />
+                <img src="/rashit-logo.png" alt="ראשית - קהילות מחנכות" style={{ height: 16, width: "auto", opacity: 0.7 }} />
                 <span style={{ fontSize: 12, color: "#8390B2" }}>אחריות לחינוך בישראל</span>
               </div>
             </div>

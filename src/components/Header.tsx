@@ -54,6 +54,11 @@ export default function Header() {
           alt="חותם"
           style={{ height: isNarrow ? 26 : 34, width: "auto", display: "block", flexShrink: 0 }}
         />
+        <img
+          src="/rashit-logo.png"
+          alt="ראשית - קהילות מחנכות"
+          style={{ height: isNarrow ? 26 : 34, width: "auto", display: "block", flexShrink: 0 }}
+        />
         <div style={{ width: 1, height: 28, background: "var(--line)", flexShrink: 0 }} />
         <div style={{ minWidth: 0 }}>
           <div
