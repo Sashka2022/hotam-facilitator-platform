@@ -91,17 +91,19 @@ export default function Header() {
           flexShrink: 0,
         }}
       >
-        <Link
-          href="/admin"
-          style={{
-            ...tabBase,
-            display: "inline-block",
-            background: isAdmin ? "var(--brand-blue)" : "transparent",
-            color: isAdmin ? "var(--white)" : "var(--brand-blue)",
-          }}
-        >
-          הוספת חומרים
-        </Link>
+        {isAdmin && (
+          <Link
+            href="/admin"
+            style={{
+              ...tabBase,
+              display: "inline-block",
+              background: "var(--brand-blue)",
+              color: "var(--white)",
+            }}
+          >
+            הוספת חומרים
+          </Link>
+        )}
         <Link
           href="/"
           style={{
