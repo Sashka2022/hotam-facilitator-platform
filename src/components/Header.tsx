@@ -21,6 +21,26 @@ export default function Header() {
   const isAdmin = pathname === "/admin";
   const isGallery = pathname === "/";
   const isNarrow = useIsNarrow();
+  const [resetting, setResetting] = useState(false);
+
+  async function handleReset() {
+    if (
+      !window.confirm(
+        "לאפס את כל התוכן — כותרת המליאה, התיאור וכל החומרים שהוספו? הפעולה אינה הפיכה."
+      )
+    ) {
+      return;
+    }
+    setResetting(true);
+    try {
+      await fetch("/api/reset", { method: "POST" });
+      // Full reload (not router.refresh) so AdminClient's local state,
+      // seeded once from server props, is guaranteed to re-mount fresh.
+      window.location.href = "/admin";
+    } finally {
+      setResetting(false);
+    }
+  }
 
   const tabBase: React.CSSProperties = {
     padding: isNarrow ? "8px 12px" : "10px 20px",
@@ -54,11 +74,24 @@ export default function Header() {
           alt="חותם"
           style={{ height: isNarrow ? 26 : 34, width: "auto", display: "block", flexShrink: 0 }}
         />
-        <img
-          src="/rashit-logo.png"
-          alt="ראשית - קהילות מחנכות"
-          style={{ height: isNarrow ? 12 : 15, width: "auto", display: "block", flexShrink: 0 }}
-        />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, flexShrink: 0 }}>
+          <img
+            src="/rashit-logo.png"
+            alt="ראשית - קהילות מחנכות"
+            style={{ height: isNarrow ? 12 : 15, width: "auto", display: "block" }}
+          />
+          <span
+            style={{
+              fontSize: isNarrow ? 7 : 9,
+              fontWeight: 700,
+              color: "#2E7A7C",
+              whiteSpace: "nowrap",
+              lineHeight: 1,
+            }}
+          >
+            ראשית קהילת מחנכות
+          </span>
+        </div>
         <div style={{ width: 1, height: 28, background: "var(--line)", flexShrink: 0 }} />
         <div style={{ minWidth: 0 }}>
           <div
@@ -86,38 +119,56 @@ export default function Header() {
           )}
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 4,
-          background: "var(--soft-bg)",
-          padding: 4,
-          borderRadius: 999,
-          flexShrink: 0,
-        }}
-      >
-        <Link
-          href="/admin"
+      <div style={{ display: "flex", alignItems: "center", gap: isNarrow ? 6 : 10, flexShrink: 0 }}>
+        <div
           style={{
-            ...tabBase,
-            display: "inline-block",
-            background: isAdmin ? "var(--brand-blue)" : "transparent",
-            color: isAdmin ? "var(--white)" : "var(--brand-blue)",
+            display: "flex",
+            gap: 4,
+            background: "var(--soft-bg)",
+            padding: 4,
+            borderRadius: 999,
+            flexShrink: 0,
           }}
         >
-          הוספת חומרים
-        </Link>
-        <Link
-          href="/"
-          style={{
-            ...tabBase,
-            display: "inline-block",
-            background: isGallery ? "var(--brand-blue)" : "transparent",
-            color: isGallery ? "var(--white)" : "var(--brand-blue)",
-          }}
-        >
-          תצוגת מחנכות
-        </Link>
+          <Link
+            href="/admin"
+            style={{
+              ...tabBase,
+              display: "inline-block",
+              background: isAdmin ? "var(--brand-blue)" : "transparent",
+              color: isAdmin ? "var(--white)" : "var(--brand-blue)",
+            }}
+          >
+            הוספת חומרים
+          </Link>
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={resetting}
+            title="איפוס כל התוכן"
+            style={{
+              ...tabBase,
+              border: "none",
+              background: "transparent",
+              color: "#B3392C",
+              opacity: resetting ? 0.6 : 1,
+              cursor: resetting ? "default" : "pointer",
+            }}
+          >
+            {resetting ? "מאפס..." : "איפוס"}
+          </button>
+          <Link
+            href="/"
+            style={{
+              ...tabBase,
+              display: "inline-block",
+              background: isGallery ? "var(--brand-blue)" : "transparent",
+              color: isGallery ? "var(--white)" : "var(--brand-blue)",
+            }}
+          >
+            תצוגת מחנכות
+          </Link>
+        </div>
       </div>
     </div>
   );
