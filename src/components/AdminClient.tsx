@@ -123,7 +123,7 @@ export default function AdminClient({
         flexWrap: "wrap",
       }}
     >
-      <div style={{ ...formCardStyle, width: 400 }}>
+      <div style={{ ...formCardStyle, width: 400, maxWidth: "100%" }}>
         <h2 style={{ fontWeight: 800, fontSize: 20, color: "var(--brand-blue)", margin: "0 0 8px" }}>
           עריכת המליאה
         </h2>
@@ -166,7 +166,7 @@ export default function AdminClient({
         </button>
       </div>
 
-      <div style={{ ...formCardStyle, width: 400 }}>
+      <div style={{ ...formCardStyle, width: 400, maxWidth: "100%" }}>
         <h2 style={{ fontWeight: 800, fontSize: 22, color: "var(--brand-blue)", margin: "0 0 8px" }}>
           הוספת חומר חדש
         </h2>
@@ -279,7 +279,7 @@ export default function AdminClient({
         </button>
       </div>
 
-      <div style={{ flex: 1, minWidth: 320 }}>
+      <div style={{ flex: 1, minWidth: 0, width: "100%" }}>
         <h3 style={{ fontWeight: 800, fontSize: 17, color: "var(--ink)", margin: "0 0 16px" }}>
           החומרים שהוספת ({materials.length})
         </h3>
@@ -291,7 +291,8 @@ export default function AdminClient({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 16,
+                flexWrap: "wrap",
+                gap: 12,
                 background: "var(--white)",
                 border: "1px solid var(--line)",
                 borderRadius: 14,
@@ -313,7 +314,7 @@ export default function AdminClient({
               >
                 <MaterialIcon category={item.category} color="#0048FF" size={24} />
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ flex: 1, minWidth: 120 }}>
                 <div
                   style={{
                     fontWeight: 700,

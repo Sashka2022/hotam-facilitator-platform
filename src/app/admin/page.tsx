@@ -31,7 +31,7 @@ export default async function AdminPage() {
       }}
     >
       <Header />
-      <div className="hotam-scroll" style={{ flex: 1, overflow: "auto", background: "var(--soft-bg)", padding: 40 }}>
+      <div className="hotam-scroll page-pad" style={{ flex: 1, overflow: "auto", background: "var(--soft-bg)" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto 24px", display: "flex", justifyContent: "flex-end" }}>
           <Link
             href="/export"
