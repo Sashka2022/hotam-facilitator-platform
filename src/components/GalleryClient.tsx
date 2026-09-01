@@ -76,7 +76,11 @@ export default function GalleryClient({
       {(() => {
         const mobileScale = 0.65;
         const radial = (
-          <div style={{ position: "relative", width: 900, height: 700 }}>
+          <div
+            id="hotam-map-stage"
+            data-plenary-title={plenary.title}
+            style={{ position: "relative", width: 900, height: 700 }}
+          >
           <svg
             viewBox="0 0 900 700"
             width={900}
@@ -130,6 +134,8 @@ export default function GalleryClient({
               <div
                 key={item.id}
                 className="satellite-wrap"
+                data-pdf-link={item.link}
+                data-pdf-title={item.title}
                 style={{
                   position: "absolute",
                   left: item.satX,

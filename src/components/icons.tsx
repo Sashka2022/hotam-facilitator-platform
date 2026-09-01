@@ -73,6 +73,25 @@ export function UploadIcon({ size = 26 }: { size?: number }) {
   );
 }
 
+export function DownloadIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 3v12" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M5 19h14" />
+    </svg>
+  );
+}
+
 export function TrashIcon({ size = 16 }: { size?: number }) {
   return (
     <svg

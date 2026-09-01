@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ExportPdfButton from "@/components/ExportPdfButton";
 
 function useIsNarrow() {
   const [isNarrow, setIsNarrow] = useState(false);
@@ -68,31 +69,32 @@ export default function Header() {
         flexShrink: 0,
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: isNarrow ? 10 : 16, minWidth: 0 }}>
-        <img
-          src="/hotam-logo-hebrew.png"
-          alt="חותם"
-          style={{ height: isNarrow ? 26 : 34, width: "auto", display: "block", flexShrink: 0 }}
-        />
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: isNarrow ? 16 : 32, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: isNarrow ? 10 : 16, flexShrink: 0 }}>
           <img
-            src="/rashit-logo.png"
-            alt="ראשית - קהילות מחנכות"
-            style={{ height: isNarrow ? 12 : 15, width: "auto", display: "block" }}
+            src="/hotam-logo-hebrew.png"
+            alt="חותם"
+            style={{ height: isNarrow ? 26 : 34, width: "auto", display: "block", flexShrink: 0 }}
           />
-          <span
-            style={{
-              fontSize: isNarrow ? 7 : 9,
-              fontWeight: 700,
-              color: "#2E7A7C",
-              whiteSpace: "nowrap",
-              lineHeight: 1,
-            }}
-          >
-            ראשית קהילת מחנכות
-          </span>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, flexShrink: 0 }}>
+            <img
+              src="/rashit-logo.png"
+              alt="ראשית - קהילות מחנכות"
+              style={{ height: isNarrow ? 12 : 15, width: "auto", display: "block" }}
+            />
+            <span
+              style={{
+                fontSize: isNarrow ? 7 : 9,
+                fontWeight: 700,
+                color: "#2E7A7C",
+                whiteSpace: "nowrap",
+                lineHeight: 1,
+              }}
+            >
+              ראשית קהילת מחנכות
+            </span>
+          </div>
         </div>
-        <div style={{ width: 1, height: 28, background: "var(--line)", flexShrink: 0 }} />
         <div style={{ minWidth: 0 }}>
           <div
             style={{
@@ -119,7 +121,8 @@ export default function Header() {
           )}
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: isNarrow ? 6 : 10, flexShrink: 0 }}>
+      <div id="header-actions" style={{ display: "flex", alignItems: "center", gap: isNarrow ? 6 : 10, flexShrink: 0 }}>
+        {isGallery && <ExportPdfButton isNarrow={isNarrow} />}
         <div
           style={{
             display: "flex",

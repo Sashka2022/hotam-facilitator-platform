@@ -207,6 +207,16 @@ button {
   }
 }
 
+.hide-on-pdf {
+  display: none !important;
+}
+
+@keyframes pdfSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hub-center,
   .satellite-wrap,
