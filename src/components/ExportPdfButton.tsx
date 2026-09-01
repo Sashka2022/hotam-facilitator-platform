@@ -29,6 +29,23 @@ export default function ExportPdfButton({ isNarrow }: { isNarrow: boolean }) {
       stage.classList.add("pdf-capturing");
       hiddenEls.forEach((el) => el.classList.add("hide-on-pdf"));
 
+      // Let the freeze (and any pending layout/paint) actually land, and make
+      // sure fonts/icons are loaded — otherwise a capture fired immediately
+      // after the class toggle can grab a stale or half-rendered frame.
+      await document.fonts.ready;
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+      // Pin the exact pixel box to capture. Left to its own defaults,
+      // html2canvas infers this from the current viewport/scroll position,
+      // which crops the image if the page has scrolled or the window has
+      // resized since load. offsetWidth/offsetHeight (not
+      // getBoundingClientRect) so this matches the stage's own 900x700
+      // layout box regardless of any ancestor CSS scale (e.g. the mobile
+      // preview transform), which is the same coordinate space the hotspot
+      // fractions below are measured in.
+      const stageWidth = stage.offsetWidth;
+      const stageHeight = stage.offsetHeight;
+
       const stageRect = stage.getBoundingClientRect();
       const linkEls = stage.querySelectorAll<HTMLElement>("[data-pdf-link]");
       const hotspots = Array.from(linkEls).map((el) => {
@@ -46,6 +63,12 @@ export default function ExportPdfButton({ isNarrow }: { isNarrow: boolean }) {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
+        scrollX: 0,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.scrollWidth,
+        windowHeight: document.documentElement.scrollHeight,
+        width: stageWidth,
+        height: stageHeight,
       });
       stage.classList.remove("pdf-capturing");
       hiddenEls.forEach((el) => el.classList.remove("hide-on-pdf"));
