@@ -247,6 +247,79 @@ export default function GalleryClient({
         );
       })()}
 
+      <div
+        id="hotam-pdf-stage"
+        data-plenary-title={plenary.title}
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: -99999,
+          width: 1240,
+          boxSizing: "border-box",
+          background: "var(--white)",
+          padding: 48,
+          display: "flex",
+          flexDirection: "column",
+          gap: 32,
+        }}
+      >
+        <div
+          style={{
+            borderRadius: 36,
+            background: "var(--brand-blue)",
+            color: "var(--white)",
+            padding: "36px 44px",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontWeight: 800, fontSize: 14, letterSpacing: "0.03em", opacity: 0.85, marginBottom: 10 }}>
+            מליאה
+          </div>
+          <div style={{ fontWeight: 800, fontSize: 26, lineHeight: 1.3, marginBottom: 14 }}>{plenary.title}</div>
+          <div style={{ fontSize: 16, lineHeight: 1.6, opacity: 0.95 }}>{plenary.description}</div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
+          {materials.map((item) => {
+            const meta = categoryMeta(item.category);
+            return (
+              <div
+                key={item.id}
+                data-pdf-link={item.link}
+                data-pdf-title={item.title}
+                style={{
+                  background: "var(--white)",
+                  border: "1px solid var(--line)",
+                  borderRadius: 24,
+                  padding: "24px 18px",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: 56,
+                    height: 56,
+                    borderRadius: 16,
+                    background: meta.accent + "26",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 12px",
+                  }}
+                >
+                  <MaterialIcon category={item.category} color="#0048FF" size={28} />
+                </div>
+                <div style={{ fontWeight: 800, fontSize: 15, color: "var(--ink)", lineHeight: 1.3, marginBottom: 8 }}>
+                  {item.title}
+                </div>
+                <div style={{ fontSize: 13, color: "var(--ink-dim)", lineHeight: 1.5 }}>{item.description}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {detailItem && (
         <div
           onClick={closeDetail}

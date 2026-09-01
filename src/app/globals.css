@@ -194,7 +194,8 @@ button {
 
 @media print {
   @page {
-    margin: 16mm 14mm;
+    size: A4;
+    margin: 12mm;
   }
   .no-print {
     display: none !important;
@@ -205,35 +206,6 @@ button {
   a {
     color: var(--brand-blue) !important;
   }
-}
-
-.hide-on-pdf {
-  display: none !important;
-}
-
-.pdf-capturing * {
-  animation: none !important;
-}
-#hotam-map-stage.pdf-capturing {
-  position: relative !important;
-  overflow: visible !important;
-  min-width: 900px !important;
-  min-height: 700px !important;
-}
-.pdf-capturing .hub-center {
-  opacity: 1 !important;
-  transform: translate(-50%, -50%) scale(1) !important;
-}
-.pdf-capturing .satellite-wrap {
-  opacity: 1 !important;
-  transform: translate(-50%, -50%) scale(1) !important;
-}
-.pdf-capturing .plenary-mobile {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-}
-.pdf-capturing .hub-line {
-  stroke-dashoffset: 0 !important;
 }
 
 @keyframes pdfSpin {
