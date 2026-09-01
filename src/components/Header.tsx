@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ExportPdfButton from "@/components/ExportPdfButton";
+import ShareMapButton from "@/components/ShareMapButton";
 import { clearAllDrafts } from "@/lib/draftStorage";
 
 function useIsNarrow() {
@@ -125,6 +126,7 @@ export default function Header() {
       </div>
       <div id="header-actions" style={{ display: "flex", alignItems: "center", gap: isNarrow ? 6 : 10, flexShrink: 0 }}>
         {isGallery && <ExportPdfButton isNarrow={isNarrow} />}
+        <ShareMapButton isNarrow={isNarrow} />
         <div
           style={{
             display: "flex",

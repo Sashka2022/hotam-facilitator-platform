@@ -24,3 +24,9 @@ model Material {
   shareSlug   String   @unique
   createdAt   DateTime @default(now())
 }
+
+model MapSnapshot {
+  id        String   @id
+  data      Json
+  createdAt DateTime @default(now())
+}
