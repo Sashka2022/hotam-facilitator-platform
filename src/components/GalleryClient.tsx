@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Material, Plenary } from "@/types";
 import { categoryMeta, siteUrl } from "@/lib/categories";
 import MaterialIcon from "@/components/MaterialIcon";
-import { ShareIcon, CloseIcon, ChevronDownIcon } from "@/components/icons";
+import { ShareIcon, CloseIcon } from "@/components/icons";
 import ShareBlock from "@/components/ShareBlock";
 
 function useIsMobile() {
@@ -73,142 +73,10 @@ export default function GalleryClient({
         padding: isMobile ? "24px 16px" : "40px",
       }}
     >
-      {isMobile ? (
-        <div style={{ maxWidth: 480, margin: "0 auto" }}>
-          <div
-            className="plenary-mobile"
-            tabIndex={0}
-            role="group"
-            aria-label={plenary.title}
-            style={{
-              background: "var(--brand-blue)",
-              color: "var(--white)",
-              borderRadius: 28,
-              padding: "32px 28px",
-              boxShadow: "0 20px 50px -20px rgba(0,72,255,0.45)",
-              marginBottom: 24,
-            }}
-          >
-            <div style={{ fontWeight: 800, fontSize: 12, letterSpacing: "0.03em", opacity: 0.85, marginBottom: 10 }}>
-              מליאה
-            </div>
-            <div style={{ fontWeight: 800, fontSize: 22, lineHeight: 1.3, marginBottom: 12 }}>
-              {plenary.title}
-            </div>
-            <div style={{ fontSize: 15, lineHeight: 1.6, opacity: 0.95 }}>{plenary.description}</div>
-          </div>
-
-          {materials.map((item) => {
-            const meta = categoryMeta(item.category);
-            const isActive = activeId === item.id;
-            return (
-              <div
-                key={item.id}
-                style={{
-                  position: "relative",
-                  background: "var(--white)",
-                  border: "1px solid var(--line)",
-                  borderRadius: 16,
-                  marginBottom: 12,
-                  overflow: "hidden",
-                }}
-              >
-                <button
-                  className="accordion-toggle"
-                  onClick={() => setActiveId(isActive ? null : item.id)}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    padding: "14px 56px 14px 18px",
-                    border: "none",
-                    background: "transparent",
-                    textAlign: "right",
-                    minHeight: 64,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 14,
-                      background: meta.accent + "26",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <MaterialIcon category={item.category} color="#0048FF" size={26} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: "var(--ink)" }}>{item.title}</div>
-                    <div style={{ fontSize: 12, color: "var(--ink-dim)", marginTop: 2 }}>{meta.label}</div>
-                  </div>
-                  <div
-                    style={{
-                      width: 20,
-                      height: 20,
-                      color: "#8390B2",
-                      flexShrink: 0,
-                      transform: isActive ? "rotate(180deg)" : undefined,
-                      transition: "transform 200ms",
-                    }}
-                  >
-                    <ChevronDownIcon size={20} />
-                  </div>
-                </button>
-                <button
-                  onClick={(e) => openShare(item.id, e)}
-                  aria-label="שיתוף"
-                  style={{
-                    position: "absolute",
-                    top: 12,
-                    left: 12,
-                    width: 40,
-                    height: 40,
-                    borderRadius: 999,
-                    border: "none",
-                    background: "var(--soft-bg)",
-                    color: "var(--brand-blue)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <ShareIcon size={16} />
-                </button>
-                {isActive && (
-                  <div style={{ padding: "14px 18px 20px", borderTop: "1px solid var(--line)", marginTop: 2 }}>
-                    <p style={{ fontSize: 14, color: "var(--ink-dim)", lineHeight: 1.55, margin: "0 0 14px" }}>
-                      {item.description}
-                    </p>
-                    <a
-                      href={item.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        display: "block",
-                        textAlign: "center",
-                        padding: 12,
-                        borderRadius: 10,
-                        background: "var(--brand-blue)",
-                        color: "var(--white)",
-                        fontWeight: 700,
-                        fontSize: 14,
-                      }}
-                    >
-                      לצפייה בחומר
-                    </a>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div style={{ position: "relative", width: 900, height: 700, maxWidth: "100%", margin: "20px auto" }}>
+      {(() => {
+        const mobileScale = 0.65;
+        const radial = (
+          <div style={{ position: "relative", width: 900, height: 700 }}>
           <svg
             viewBox="0 0 900 700"
             width={900}
@@ -343,8 +211,32 @@ export default function GalleryClient({
               </div>
             );
           })}
-        </div>
-      )}
+          </div>
+        );
+
+        if (!isMobile) {
+          return <div style={{ margin: "20px auto", maxWidth: "100%" }}>{radial}</div>;
+        }
+
+        return (
+          <div
+            style={{
+              overflow: "auto",
+              WebkitOverflowScrolling: "touch",
+              maxWidth: "100%",
+              borderRadius: 20,
+              background: "var(--white)",
+              border: "1px solid var(--line)",
+            }}
+          >
+            <div style={{ width: 900 * mobileScale, height: 700 * mobileScale }}>
+              <div style={{ width: 900, height: 700, transform: `scale(${mobileScale})`, transformOrigin: "top right" }}>
+                {radial}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {detailItem && (
         <div
