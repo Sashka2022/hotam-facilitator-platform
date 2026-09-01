@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "פלטפורמה למנחה · חותם",
+  title: "צידה לדרך · חותם",
   description: "חומרי הדרכה מעוצבים למחנכות",
 };
 

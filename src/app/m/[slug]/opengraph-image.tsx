@@ -47,7 +47,7 @@ export default async function OgImage({
     ? material.shareTitle && material.shareTitle.trim()
       ? material.shareTitle.trim()
       : material.title
-    : "פלטפורמה למנחה";
+    : "צידה לדרך";
   const meta = categoryMeta(material?.category ?? "article");
   const label = material ? meta.label : "";
 

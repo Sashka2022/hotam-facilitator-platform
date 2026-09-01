@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: plenary.title,
       description: plenary.description,
       url: `${siteUrl()}/export`,
-      siteName: "פלטפורמה למנחה · חותם",
+      siteName: "צידה לדרך · חותם",
       locale: "he_IL",
       type: "website",
     },

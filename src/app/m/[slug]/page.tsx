@@ -24,13 +24,13 @@ export async function generateMetadata({
       : material.title;
 
   return {
-    title: `${effectiveShareTitle} · פלטפורמה למנחה`,
+    title: `${effectiveShareTitle} · צידה לדרך`,
     description: material.description,
     openGraph: {
       title: effectiveShareTitle,
       description: material.description,
       url: `${siteUrl()}/m/${material.shareSlug}`,
-      siteName: "פלטפורמה למנחה · חותם",
+      siteName: "צידה לדרך · חותם",
       locale: "he_IL",
       type: "website",
     },

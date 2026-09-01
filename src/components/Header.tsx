@@ -65,7 +65,7 @@ export default function Header() {
               whiteSpace: "nowrap",
             }}
           >
-            פלטפורמה למנחה
+            צידה לדרך
           </div>
           {!isNarrow && (
             <div
