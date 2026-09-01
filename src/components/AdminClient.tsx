@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Material, Plenary } from "@/types";
 import { CATEGORY_OPTIONS, categoryMeta } from "@/lib/categories";
 import MaterialIcon from "@/components/MaterialIcon";
 import { ShareIcon, UploadIcon, TrashIcon } from "@/components/icons";
+import { DRAFT_FORM_KEY, DRAFT_PLENARY_KEY, readDraft, writeDraft, clearDraft } from "@/lib/draftStorage";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -53,6 +54,33 @@ export default function AdminClient({
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [draftRestored, setDraftRestored] = useState(false);
+
+  // Restore any in-progress drafts left behind by an accidental refresh —
+  // done in an effect (not the initial state) so the client render always
+  // starts from the server-provided values and only swaps in the draft
+  // after hydration, avoiding a hydration mismatch.
+  useEffect(() => {
+    const draftForm = readDraft<typeof form>(DRAFT_FORM_KEY);
+    if (draftForm) setForm(draftForm);
+    const draftPlenary = readDraft<Plenary>(DRAFT_PLENARY_KEY);
+    if (draftPlenary) setPlenary(draftPlenary);
+    setDraftRestored(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Back up drafts to sessionStorage while typing — private to this browser
+  // tab, cleared automatically when the tab closes or on an explicit reset,
+  // so an accidental refresh before submitting doesn't lose the work.
+  useEffect(() => {
+    if (!draftRestored) return;
+    writeDraft(DRAFT_FORM_KEY, form);
+  }, [form, draftRestored]);
+
+  useEffect(() => {
+    if (!draftRestored) return;
+    writeDraft(DRAFT_PLENARY_KEY, plenary);
+  }, [plenary, draftRestored]);
 
   const savePlenary = async () => {
     const res = await fetch("/api/plenary", {
@@ -61,6 +89,7 @@ export default function AdminClient({
       body: JSON.stringify(plenary),
     });
     if (res.ok) {
+      clearDraft(DRAFT_PLENARY_KEY);
       setPlenarySaved(true);
       setTimeout(() => setPlenarySaved(false), 2000);
     }
@@ -102,6 +131,7 @@ export default function AdminClient({
       setMaterials((prev) => [...prev, data]);
       setForm({ title: "", shareTitle: "", link: "", category: "presentation", description: "" });
       setFile(null);
+      clearDraft(DRAFT_FORM_KEY);
     } finally {
       setSubmitting(false);
     }

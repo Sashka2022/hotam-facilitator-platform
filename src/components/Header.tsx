@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ExportPdfButton from "@/components/ExportPdfButton";
+import { clearAllDrafts } from "@/lib/draftStorage";
 
 function useIsNarrow() {
   const [isNarrow, setIsNarrow] = useState(false);
@@ -35,6 +36,7 @@ export default function Header() {
     setResetting(true);
     try {
       await fetch("/api/reset", { method: "POST" });
+      clearAllDrafts();
       // Full reload (not router.refresh) so AdminClient's local state,
       // seeded once from server props, is guaranteed to re-mount fresh.
       window.location.href = "/admin";
