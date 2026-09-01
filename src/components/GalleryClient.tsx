@@ -71,6 +71,9 @@ export default function GalleryClient({
         overflow: "auto",
         background: "var(--soft-bg)",
         padding: isMobile ? "24px 16px" : "40px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: isMobile ? "flex-start" : "center",
       }}
     >
       {(() => {
