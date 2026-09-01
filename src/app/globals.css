@@ -211,6 +211,25 @@ button {
   display: none !important;
 }
 
+.pdf-capturing * {
+  animation: none !important;
+}
+.pdf-capturing .hub-center {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+.pdf-capturing .satellite-wrap {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+.pdf-capturing .plenary-mobile {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+.pdf-capturing .hub-line {
+  stroke-dashoffset: 0 !important;
+}
+
 @keyframes pdfSpin {
   to {
     transform: rotate(360deg);

@@ -22,6 +22,13 @@ export default function ExportPdfButton({ isNarrow }: { isNarrow: boolean }) {
         import("jspdf"),
       ]);
 
+      // Freeze entrance animations into their settled end-state first, so the
+      // capture never lands mid-animation (e.g. satellites still at opacity 0
+      // if exporting right after the page loads), and so the hotspot
+      // measurements below match what actually gets drawn into the image.
+      stage.classList.add("pdf-capturing");
+      hiddenEls.forEach((el) => el.classList.add("hide-on-pdf"));
+
       const stageRect = stage.getBoundingClientRect();
       const linkEls = stage.querySelectorAll<HTMLElement>("[data-pdf-link]");
       const hotspots = Array.from(linkEls).map((el) => {
@@ -35,12 +42,12 @@ export default function ExportPdfButton({ isNarrow }: { isNarrow: boolean }) {
         };
       });
 
-      hiddenEls.forEach((el) => el.classList.add("hide-on-pdf"));
       const canvas = await html2canvas(stage, {
         scale: 2,
         useCORS: true,
         backgroundColor: "#ffffff",
       });
+      stage.classList.remove("pdf-capturing");
       hiddenEls.forEach((el) => el.classList.remove("hide-on-pdf"));
 
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
@@ -79,6 +86,7 @@ export default function ExportPdfButton({ isNarrow }: { isNarrow: boolean }) {
       const title = stage.getAttribute("data-plenary-title") || "מפת-חומרים";
       pdf.save(`${title}.pdf`);
     } finally {
+      stage.classList.remove("pdf-capturing");
       hiddenEls.forEach((el) => el.classList.remove("hide-on-pdf"));
       setExporting(false);
     }
